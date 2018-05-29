@@ -1,0 +1,5 @@
+1. open "Project.pro" file with Qt Creator
+2. Press "Projects" tab on the left of Qt GUI
+3. Press "Configure Project" button to 
+creat the "Project.pro.user" file
+4. Press Ctrl+R to run the code

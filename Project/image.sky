@@ -1,0 +1,14 @@
+# This is an image is using SKY format which is similar to SVG format
+# The SKY format is particularly designed to store the sketches
+# This is the size of image
+s 300 300
+# Move to a 2D position
+m 100 100
+# Curve to a 2D position using Bezeir control points
+c 200 100 150 150 200 200
+c 100 200 150 150 100 100
+# Drawing a Line to a 2D position
+l 100 200
+l 200 200
+l 200 100
+l 100 100
