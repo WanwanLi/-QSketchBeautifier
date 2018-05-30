@@ -1,6 +1,7 @@
 #include "QDefine.h"
 #include <QThread>
 #include <QPainter>
+#include <QTransform>
 #include <QPainterPath>
 #include <QTextStream>
 
@@ -11,9 +12,11 @@ class QSketch : public QObject
 	Q_OBJECT
 
 	public:
+	void getCoords();
 	QSketch(QSize size);
 	bool isUpdated=false;
 	bool isOnUpdating();
+	QVector<vec3*> quads;
 	QPainterPath painterPath;
 	QAnalyzer* analyzer=NULL;
 	QSketch(); bool beautify();
@@ -22,7 +25,9 @@ class QSketch : public QObject
 	bool save(QString fileName);
 	void operator=(QPoint point);
 	void operator+=(QPoint point);
+	QVector<QVector<vec>> coords;
 	QString fileName="QSketch.sky";
+	QVector<QTransform> transforms;
 	QSize size; void resize(QSize size);
 	QVector<vec2> point2D; veci path;
 	void drawPath(QPainter& painter);

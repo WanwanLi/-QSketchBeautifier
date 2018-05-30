@@ -18,6 +18,7 @@ class QCanvas : public QWidget
 
 	public slots:
 	void clear();
+	void visualize();
 	void getCircles();
 	bool isModified();
 	void setEditable();
@@ -35,6 +36,7 @@ class QCanvas : public QWidget
 	void resizeImage();
 	bool isMousePressed;
 	bool isImageModified;
+	QVector<QColor> colors;
 	QBasicTimer basicTimer;
 	void critical(QString operation);
 	void resizeWindow(int margin);

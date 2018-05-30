@@ -69,13 +69,13 @@ void QOptimizer::save(QString fileName, QVector<qreal> vector)
 }
 QVector<qreal> QOptimizer::load(QString fileName)
 {
-    QFile file(fileName); QVector<qreal> vector;
+	QFile file(fileName); QVector<qreal> vector;
 	if(!file.open(QIODevice::ReadOnly))return vector;
-    QTextStream textStream(&file);
-    int size=textStream.readLine().toInt();
-    for(int i=0; i<size; i++)
-    vector<<textStream.readLine().toDouble();
-    file.close(); file.remove(); return vector;
+	QTextStream textStream(&file);
+	int size=textStream.readLine().toInt();
+	for(int i=0; i<size; i++)
+	vector<<textStream.readLine().toDouble();
+	file.close(); file.remove(); return vector;
 }
 void QOptimizer::quit()
 {

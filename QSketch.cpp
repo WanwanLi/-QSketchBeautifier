@@ -98,6 +98,41 @@ bool QSketch::load(QString fileName)
 			this->point2D<<vec2(c5, c6);
 			this->cubicTo(c1, c2, c3, c4, c5, c6);
 		}
+		else if(line[0]=="MAT")
+		{
+			qreal m11=line[(1-1)*3+1].toDouble();
+			qreal m12=line[(1-1)*3+2].toDouble();
+			qreal m13=line[(1-1)*3+3].toDouble();
+			qreal m21=line[(2-1)*3+1].toDouble();
+			qreal m22=line[(2-1)*3+2].toDouble();
+			qreal m23=line[(2-1)*3+3].toDouble();
+			qreal m31=line[(3-1)*3+1].toDouble();
+			qreal m32=line[(3-1)*3+2].toDouble();
+			qreal m33=line[(3-1)*3+3].toDouble();
+			this->transforms<<QTransform
+			(
+				m11, m12, m13,
+				m21, m22, m23,
+				m31, m32, m33
+			);
+		}
+		else if(line[0]=="QUAD")
+		{
+			qreal m11=line[(1-1)*3+1].toDouble();
+			qreal m12=line[(1-1)*3+2].toDouble();
+			qreal m13=line[(1-1)*3+3].toDouble();
+			qreal m21=line[(2-1)*3+1].toDouble();
+			qreal m22=line[(2-1)*3+2].toDouble();
+			qreal m23=line[(2-1)*3+3].toDouble();
+			qreal m31=line[(3-1)*3+1].toDouble();
+			qreal m32=line[(3-1)*3+2].toDouble();
+			qreal m33=line[(3-1)*3+3].toDouble();
+			vec3 p00=vec3(m11, m12, m13);
+			vec3 p01=vec3(m21, m22, m23);
+			vec3 p10=vec3(m31, m32, m33);
+			vec3 p11=vec3(0, 0, 0);
+			this->quads<<new vec3[4]{p00, p01, p11, p10};
+		}
 		else (*this->analyzer)<<line;
 	}
 	return isNotValidSketch?false:true;
@@ -214,6 +249,7 @@ void QSketch::update()
 			this->cubicTo(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y());
 		}
 	}
+	this->getCoords();
 }
 bool QSketch::beautify()
 {
@@ -224,6 +260,23 @@ bool QSketch::beautify()
 	this->isUpdated=true;
 	if(beautifier->isRunning())return false;
 	this->beautifier->start(); return true;
+}
+void QSketch::getCoords()
+{
+	this->coords.clear();
+	for(int i=0; i<analyzer->curves.size(); i++)
+	{
+		vec2 curve=analyzer->curves[i]; vec coord;
+		for(int j=curve.x(); j<curve.y(); j++)
+		{
+			qreal x=point2D[j].x(), x1;
+			qreal y=point2D[j].y(), y1;
+			transforms[i].map(x, y, &x1, &y1);
+			coord<<x1<<y1;
+		}
+		QVector<vec> coords; coords<<coord;
+		this->coords<<coords;
+	}
 }
 void QSketch::getCircles()
 {
@@ -283,7 +336,10 @@ void QSketch::drawProgressBar(QPainter& painter)
 void QSketch::clear()
 {
 	this->path.clear(); 
+	this->quads.clear();
+	this->coords.clear();
 	this->point2D.clear();
 	this->analyzer->clear();
+	this->transforms.clear();
 	this->painterPath=QPainterPath();
 }

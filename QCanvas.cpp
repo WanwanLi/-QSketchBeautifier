@@ -1,6 +1,8 @@
 #include <QPainter>
+#include "QModel.h"
 #include "QCanvas.h"
 #include <QMessageBox>
+#include "QOpenGLWindow.h"
 
 QCanvas::QCanvas(QWidget* widget) : QWidget(widget)
 {
@@ -9,6 +11,7 @@ QCanvas::QCanvas(QWidget* widget) : QWidget(widget)
 	this->shape.resize(this->size());
 	this->basicTimer.start(15, this);
 	this->bgColor=qRgb(255, 255, 255);
+	this->colors<<Qt::green<<Qt::red<<Qt::blue;
 	this->image=QImage(size(), QImage::Format_RGB32);
 	this->isImageModified=false; this->isMousePressed=false; this->clear();
 	this->pen=QPen(Qt::green, 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
@@ -40,6 +43,13 @@ bool QCanvas::saveImage(QString fileName, const char* fileFormat)
 	else if(tr(fileFormat)=="svg")this->shape.saveAsSVGFile(fileName);
 	else if(!image.save(fileName, fileFormat))return false;
 	else this->isImageModified=false; return true;
+}
+void QCanvas::visualize()
+{
+	if(!shape.coords.size()){this->critical("Visualize 3D Model , not complete the Beautification of"); return;}
+	qDebug()<<"QCanvas::visualize() shape.quads:"<<shape.quads<<"  coods:"<<shape.coords;
+	QOpenGLWindow* window=new QOpenGLWindow(colors, shape.quads, shape.coords);
+	window->resize(400, 300); window->show(); shape.saveAsSVGFile("SketchMD.svg");
 }
 void QCanvas::resizeWindow(int margin)
 {
